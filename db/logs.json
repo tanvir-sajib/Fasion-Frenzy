@@ -1,0 +1,457 @@
+[
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "graphictee",
+    "details": "",
+    "timestamp": "2026-08-13T18:37:13.205Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T18:37:20.845Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "formalshirt",
+    "details": "",
+    "timestamp": "2026-08-13T18:37:22.875Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Footwear",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:04.163Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Jackets & Outerwear",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:11.268Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:23.795Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:35.699Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:37.190Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:39.459Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:41.264Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Panjabi & Ethnic Wear",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:42.698Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Jeans & Trousers",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:44.049Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Footwear",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:45.300Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Jackets & Outerwear",
+    "details": "",
+    "timestamp": "2026-08-13T18:39:46.932Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T18:40:22.693Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "printshirt",
+    "details": "",
+    "timestamp": "2026-08-13T18:40:32.308Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳1,450",
+    "timestamp": "2026-08-13T18:40:57.411Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T18:53:25.387Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786646416561",
+    "details": "",
+    "timestamp": "2026-08-13T18:53:36.965Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "printshirt",
+    "details": "",
+    "timestamp": "2026-08-13T18:53:49.769Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "formalshirt",
+    "details": "",
+    "timestamp": "2026-08-13T18:53:51.924Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Jackets & Outerwear",
+    "details": "",
+    "timestamp": "2026-08-13T18:53:54.780Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T19:06:08.071Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786647961750",
+    "details": "",
+    "timestamp": "2026-08-13T19:08:43.969Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786647961750",
+    "details": "",
+    "timestamp": "2026-08-13T19:08:54.082Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786647961750",
+    "details": "",
+    "timestamp": "2026-08-13T19:11:46.972Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786647961750",
+    "details": "",
+    "timestamp": "2026-08-13T19:11:50.817Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786647961750",
+    "details": "",
+    "timestamp": "2026-08-13T19:19:16.761Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786647961750",
+    "details": "",
+    "timestamp": "2026-08-13T19:19:48.735Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "",
+    "timestamp": "2026-08-13T19:22:43.748Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "",
+    "timestamp": "2026-08-13T19:22:47.751Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "printshirt",
+    "details": "Printed Camo Shirt",
+    "timestamp": "2026-08-13T19:31:11.550Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳1,450",
+    "timestamp": "2026-08-13T19:31:29.472Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786647961750",
+    "details": "Naruto",
+    "timestamp": "2026-08-13T19:33:24.002Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786646416561",
+    "details": "nion",
+    "timestamp": "2026-08-13T19:35:45.919Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786646416561",
+    "details": "nion",
+    "timestamp": "2026-08-13T19:51:49.712Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "polo",
+    "details": "Classic Pique Polo",
+    "timestamp": "2026-08-13T19:56:09.014Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳1,100",
+    "timestamp": "2026-08-13T19:56:56.252Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786646329093",
+    "details": "snekers",
+    "timestamp": "2026-08-13T20:08:32.508Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786646329093",
+    "details": "snekers",
+    "timestamp": "2026-08-13T20:08:34.110Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "Shirts",
+    "timestamp": "2026-08-13T20:08:38.742Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:09:45.185Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:09:52.305Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:10:09.103Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳5,000",
+    "timestamp": "2026-08-13T20:11:00.124Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "Shirts",
+    "timestamp": "2026-08-13T20:24:16.427Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:25:17.410Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳5,000",
+    "timestamp": "2026-08-13T20:26:44.058Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "T-Shirts & Polos",
+    "timestamp": "2026-08-13T20:27:33.881Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:38:39.636Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "T-Shirts & Polos",
+    "timestamp": "2026-08-13T20:41:49.882Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Footwear",
+    "details": "Footwear",
+    "timestamp": "2026-08-13T20:42:41.218Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "panjabi",
+    "details": "Embroidered Cotton Panjabi",
+    "timestamp": "2026-08-13T20:43:17.070Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Panjabi & Ethnic Wear",
+    "details": "Panjabi & Ethnic Wear",
+    "timestamp": "2026-08-13T20:47:25.918Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:47:43.302Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:51:52.654Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T20:52:02.628Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳5,000",
+    "timestamp": "2026-08-13T20:52:44.149Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Jackets & Outerwear",
+    "details": "Jackets & Outerwear",
+    "timestamp": "2026-08-13T20:52:51.460Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "T-Shirts & Polos",
+    "details": "T-Shirts & Polos",
+    "timestamp": "2026-08-13T20:52:53.707Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "filter_category",
+    "productId": "Shirts",
+    "details": "Shirts",
+    "timestamp": "2026-08-13T20:52:56.520Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T21:02:21.270Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "view_product",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T21:02:23.225Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "add_to_cart",
+    "productId": "p_1786651773119",
+    "details": "frenzy shirt",
+    "timestamp": "2026-08-13T21:02:36.034Z"
+  },
+  {
+    "sessionId": "sess_1786646232685_7vsijw",
+    "action": "place_order",
+    "productId": null,
+    "details": "Total: ৳10,000",
+    "timestamp": "2026-08-13T21:03:45.850Z"
+  }
+]

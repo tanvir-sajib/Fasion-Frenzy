@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fashion Frenzy — Clothing Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#100E17; --ink2:#181521; --paper:#FBF9F6; --paper-dim:#F1EDE6;
+    --cyan:#17E3D0; --pink:#FF3E88; --violet:#7A5CFF; --gold:#FFC93C; --gray:#8B8796; --amber:#FF8A3D;
+    --grad: linear-gradient(100deg, var(--cyan), var(--violet) 55%, var(--pink));
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:#0B0A10; color:var(--ink); font-family:'Manrope',sans-serif; -webkit-font-smoothing:antialiased;}
+  #storeCanvas{position:fixed; inset:0; width:100vw; height:100vh; z-index:-1; display:block;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;} }
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  h1,h2,h3{font-family:'Unbounded',sans-serif;}
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 6vw; background:rgba(16,14,23,0.66); backdrop-filter:blur(14px);
+    color:var(--paper); border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Unbounded',sans-serif; font-weight:700; font-size:1.1rem; letter-spacing:0.01em;}
+  .brand .mark{ width:30px; height:30px; border-radius:8px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:0.95rem; color:var(--ink); font-weight:800;}
+  .nav-right{display:flex; align-items:center; gap:26px;}
+  .nav-links{display:flex; gap:26px; font-size:0.82rem; letter-spacing:0.02em; font-weight:600; color:#D8D5DE;}
+  .nav-links a:hover{color:var(--cyan);}
+  .lang-switch{display:flex; gap:6px; background:rgba(255,255,255,0.08); padding:4px; border-radius:99px;}
+  .lang-btn{background:none; color:#8B8796; padding:6px 12px; border-radius:99px; font-weight:700; font-size:0.75rem; transition:0.2s;}
+  .lang-btn.active{background:var(--grad); color:var(--ink);}
+  .lang-btn:hover:not(.active){color:#fff;}
+  .cart-btn{
+    position:relative; display:flex; align-items:center; gap:8px;
+    padding:9px 18px; border-radius:999px; background:var(--grad); color:var(--ink);
+    font-size:0.8rem; font-weight:700; letter-spacing:0.02em; transition:transform 0.2s ease;
+  }
+  .cart-btn:hover{transform:translateY(-2px); box-shadow:0 0 20px -2px var(--violet);}
+  .cart-count{ background:var(--ink); color:var(--paper); font-size:0.72rem; min-width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 4px;}
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  header.hero{
+    position:relative; background:rgba(16,14,23,0.42); backdrop-filter:blur(2px); color:var(--paper); overflow:hidden;
+    padding:11vh 6vw 9vh; display:grid; grid-template-columns:1.25fr 1fr; gap:6vw; align-items:center;
+  }
+  header.hero::before{
+    content:''; position:absolute; inset:0; z-index:0;
+    background: radial-gradient(circle at 15% 20%, rgba(23,227,208,0.22), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(255,62,136,0.18), transparent 42%),
+      radial-gradient(circle at 60% 90%, rgba(122,92,255,0.22), transparent 45%);
+    pointer-events:none;
+  }
+  header.hero > *{position:relative; z-index:2;}
+  .eyebrow{ font-family:'Manrope',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--cyan); margin-bottom:22px; display:flex; align-items:center; gap:10px;}
+  .eyebrow .dot{width:8px; height:8px; border-radius:50%; background:var(--pink); box-shadow:0 0 12px var(--pink);}
+  h1.display{ font-weight:700; font-size:clamp(2.3rem,5.4vw,4rem); line-height:1.08; letter-spacing:-0.01em; }
+  h1.display .grad-text{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero-side{font-size:1rem; line-height:1.7; color:#C9C6D2; max-width:42ch;}
+  .hero-side p + p{margin-top:16px;}
+  .hero-tags{display:flex; gap:10px; margin-top:26px; flex-wrap:wrap;}
+  .hero-tag{ font-size:0.75rem; font-weight:700; letter-spacing:0.04em; padding:7px 14px; border-radius:999px; border:1px solid rgba(255,255,255,0.18); color:#EDEBF2;}
+  @media (max-width:860px){ header.hero{grid-template-columns:1fr;} }
+
+  /* ─── CATEGORY SECTION (3D CRYSTAL ART) ────────────────────────────── */
+  .cat-wrap{padding:2px 6vw 1px; position:relative; z-index:1; background:rgba(251,249,246,0.88); backdrop-filter:blur(18px);}
+  .cat-label{display:flex; justify-content:space-between; align-items:baseline; padding:58px 0 26px; flex-wrap:wrap; gap:12px;}
+  .cat-label h2{font-weight:700; font-size:1.7rem;}
+  .cat-label span{font-size:0.78rem; font-weight:700; color:var(--gray);}
+  .cat-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:16px; margin-bottom:2vh; }
+  .cat-tile{
+    position:relative; background:rgba(16,14,23,0.85); backdrop-filter:blur(6px); border-radius:20px; padding:28px 16px 24px; text-align:center;
+    overflow:hidden; transition:transform 0.3s ease, box-shadow 0.3s ease; width:100%; border:1px solid rgba(255,255,255,0.06);
+    /* 3D Perspective on Hover */
+    perspective: 800px; transform: perspective(800px) rotateY(0deg);
+  }
+  .cat-tile:hover{ transform: perspective(800px) rotateY(-4deg) scale(1.02); box-shadow:0 14px 30px rgba(16,14,23,0.35), 0 0 26px -4px var(--tile-accent, var(--pink)); }
+  .cat-tile.active{ transform: perspective(800px) rotateY(0deg) scale(1.02); box-shadow:0 0 0 2px var(--tile-accent, var(--pink)); }
+  .cat-tile > *{position:relative; z-index:2;}
+  
+  /* 3D Crystal Geometric Art Background */
+  .cat-tile .bg-art {
+    position:absolute; inset:-100%; z-index:0; pointer-events:none; opacity:0.2;
+    background: var(--tile-accent);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    transform: rotate(45deg) scale(1.8);
+    filter: blur(12px);
+    transition: opacity 0.3s ease, transform 0.6s ease;
+  }
+  .cat-tile:hover .bg-art { opacity:0.4; transform: rotate(30deg) scale(2) translateY(10px); }
+  
+  .cat-icon{ width:64px; height:64px; border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; background:var(--tile-accent); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+  .cat-icon svg{width:32px; height:32px; fill:#100E17; stroke:none;}
+  .cat-tile h4{color:var(--paper); font-family:'Unbounded',sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:6px;}
+  .cat-tile p{color:#9A96A5; font-size:0.8rem; font-weight:500;}
+  .cat-tile .arrow{ position:absolute; top:16px; right:16px; color:#9A96A5; font-size:0.9rem; transition:transform 0.25s ease, color 0.25s ease; z-index:3; }
+  .cat-tile:hover .arrow{ transform:translate(4px,-4px); color:var(--paper); }
+  
+  @media (max-width:1080px){ .cat-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:560px){ .cat-grid{grid-template-columns:repeat(2,1fr);} }
+
+  .filter-bar{ display:none; align-items:center; gap:10px; margin:-6px 0 22px; font-size:0.85rem; font-weight:700; color:var(--ink); }
+  .filter-bar.show{display:flex;}
+  .filter-chip{ display:flex; align-items:center; gap:8px; background:var(--ink); color:var(--paper); padding:8px 14px; border-radius:999px; font-size:0.8rem; }
+  .filter-chip button{color:var(--paper); opacity:0.7; font-size:1rem; line-height:1;}
+  .filter-chip button:hover{opacity:1;}
+
+  .window-wrap{padding:1px 6vw 1px; position:relative; z-index:1; background:rgba(251,249,246,0.88); backdrop-filter:blur(18px);}
+  .window-label{display:flex; justify-content:space-between; align-items:baseline; padding:12px 0 26px; flex-wrap:wrap; gap:12px;}
+  .window-label h2{font-weight:700; font-size:1.7rem;}
+  .window-count{font-size:0.78rem; font-weight:700; color:var(--gray);}
+
+  .panes{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-bottom:8vh;}
+  .pane{
+    position:relative; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); border-radius:16px; overflow:hidden;
+    box-shadow:0 1px 3px rgba(16,14,23,0.06); border:1px solid #ECE8E0;
+    transition:transform 0.25s ease, box-shadow 0.25s ease; cursor: pointer;
+  }
+  .pane.hidden{display:none;}
+  .pane:hover{ transform:translateY(-5px); box-shadow:0 16px 32px rgba(16,14,23,0.14); }
+  .pane-inner{ position:relative; height:100%; padding:24px 22px 22px; display:flex; flex-direction:column; }
+  .pane-topbar{ height:5px; width:100%; }
+  .cat-chip{ align-self:flex-start; font-size:0.68rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; padding:5px 10px; border-radius:6px; margin-bottom:12px; color:#fff; }
+  
+  .garment{width:100%; height:126px; display:flex; align-items:center; justify-content:center; margin:4px 0 12px; background:var(--paper-dim); border-radius:12px; overflow:hidden;}
+  .garment img{ width:100%; height:100%; object-fit:contain; padding:4px; transition:transform 0.35s ease; }
+  .garment svg{width:auto; height:98px; transition:transform 0.35s ease;}
+  .pane:hover .garment img, .pane:hover .garment svg{transform:translateY(-3px) scale(1.05);}
+  
+  .pane h3{font-weight:600; font-size:1.02rem; margin-bottom:4px;}
+  .pane .desc{font-size:0.82rem; color:#77737f; margin-bottom:16px;}
+  .pane .stock-status{font-size:0.75rem; font-weight:700; margin-top:-10px; margin-bottom:12px; display:block;}
+  .stock-available{color:var(--cyan);}
+  .stock-soldout{color:var(--pink);}
+  
+  .pane .meta{display:flex; justify-content:space-between; align-items:center; margin-top:auto;}
+  .price{font-family:'Unbounded',sans-serif; font-weight:700; font-size:1rem; color:var(--ink);}
+  .buy-btn{ padding:9px 18px; border-radius:8px; background:var(--ink); color:var(--paper); font-size:0.76rem; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; transition:background 0.2s ease; }
+  .buy-btn:hover{background:var(--pink);}
+  .buy-btn.added{background:var(--cyan); color:var(--ink);}
+  .buy-btn:disabled{background:#8B8796; cursor:not-allowed; opacity:0.6;}
+
+  @media (max-width:860px){ .panes{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .panes{grid-template-columns:1fr;} }
+
+  .about{
+    padding:10vh 6vw; display:grid; grid-template-columns:1fr 1fr; gap:4vw;
+    background:rgba(16,14,23,0.95); color:var(--paper); position:relative; overflow:hidden; z-index:1;
+    align-items:center;
+  }
+  .about::before{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 10% 20%, rgba(23,227,208,0.15), transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255,62,136,0.15), transparent 50%);
+    pointer-events:none;
+  }
+  .about > *{position:relative; z-index:1;}
+  .about-left h2{
+    font-family:'Unbounded', sans-serif; font-weight:800; font-size:clamp(2rem,3.5vw,3.5rem);
+    line-height:1.1; letter-spacing:-0.02em; margin-bottom:24px;
+    background: var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .about-left p{font-size:1rem; line-height:1.8; color:#C9C6D2; max-width:50ch; margin-bottom:24px;}
+  .about-stats{display:flex; gap:30px; flex-wrap:wrap;}
+  .about-stats div{font-family:'Unbounded',sans-serif; font-weight:700; font-size:1.8rem; color:#fff;}
+  .about-stats span{display:block; font-family:'Manrope',sans-serif; font-size:0.85rem; font-weight:400; color:#8B8796; margin-top:4px;}
+
+  .about-right{
+    background:rgba(255,255,255,0.03); backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.08); border-radius:24px; padding:32px 28px;
+  }
+  .about-right h3{font-family:'Unbounded',sans-serif; font-weight:700; font-size:1.2rem; color:var(--cyan); margin-bottom:16px; display:flex; align-items:center; gap:10px;}
+  .about-right .info-item{display:flex; gap:14px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05);}
+  .about-right .info-item:last-child{border:none;}
+  .about-right .info-icon{width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; color:var(--cyan); flex-shrink:0;}
+  .about-right .info-text{font-size:0.9rem;}
+  .about-right .info-text b{display:block; font-size:0.7rem; text-transform:uppercase; color:#8B8796; letter-spacing:0.05em; margin-bottom:2px;}
+
+  @media (max-width:860px){ .about{grid-template-columns:1fr; gap:40px;} }
+
+  footer{ padding:30px 6vw; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:rgba(16,14,23,0.82); backdrop-filter:blur(12px); color:#9A96A5; font-size:0.8rem; border-top:1px solid rgba(255,255,255,0.08); position:relative; z-index:1; }
+  footer .socials{display:flex; gap:20px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#EDEBF2;}
+  footer a:hover{color:var(--pink);}
+
+  .overlay{position:fixed; inset:0; background:rgba(16,14,23,0.55); opacity:0; pointer-events:none; transition:opacity 0.3s ease; z-index:90;}
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .drawer{ position:fixed; top:0; right:0; height:100%; width:min(430px,92vw); background:var(--paper); z-index:95; transform:translateX(100%); transition:transform 0.35s ease; display:flex; flex-direction:column; box-shadow:-10px 0 34px rgba(0,0,0,0.25); }
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{display:flex; justify-content:space-between; align-items:center; padding:22px 24px; border-bottom:1px solid rgba(16,14,23,0.1);}
+  .drawer-head h3{font-weight:700; font-size:1.2rem;}
+  .close-x{font-size:1.5rem; line-height:1; padding:4px 8px;}
+  .close-x:hover{color:var(--pink);}
+  .cart-items{flex:1; overflow-y:auto; padding:8px 24px;}
+  .cart-empty{padding:44px 0; text-align:center; color:#8B8796; font-size:0.9rem;}
+  .cart-row{display:flex; gap:14px; padding:16px 0; border-bottom:1px solid rgba(16,14,23,0.08);}
+  .cart-row .ci-icon{width:54px; height:54px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--paper-dim); border-radius:10px;}
+  .cart-row .ci-icon svg{width:34px; height:auto;}
+  .cart-row .ci-info{flex:1;}
+  .cart-row h4{font-weight:700; font-size:0.9rem; margin-bottom:4px; font-family:'Manrope',sans-serif;}
+  .qty-ctrl{display:flex; align-items:center; gap:10px; margin-top:6px;}
+  .qty-ctrl button{width:22px; height:22px; border-radius:6px; border:1px solid var(--ink); font-size:0.85rem; display:flex; align-items:center; justify-content:center;}
+  .qty-ctrl button:hover{background:var(--ink); color:var(--paper);}
+  .qty-ctrl span{font-family:'Unbounded',sans-serif; font-size:0.78rem; min-width:16px; text-align:center;}
+  .remove-link{font-size:0.72rem; color:var(--pink); font-weight:700; text-transform:uppercase; letter-spacing:0.03em; margin-top:6px; display:inline-block;}
+  .ci-price{font-family:'Unbounded',sans-serif; font-size:0.85rem; white-space:nowrap;}
+  .drawer-foot{padding:20px 24px 26px; border-top:1px solid rgba(16,14,23,0.1);}
+  .subtotal-row{display:flex; justify-content:space-between; font-family:'Unbounded',sans-serif; font-size:1rem; margin-bottom:16px;}
+  .checkout-btn{ width:100%; padding:15px; border-radius:10px; background:var(--grad); color:var(--ink); font-size:0.85rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; transition:opacity 0.2s ease; }
+  .checkout-btn:hover{opacity:0.88;}
+  .checkout-btn:disabled{background:#D8D5DE; color:#8B8796; cursor:not-allowed;}
+
+  /* ─── PRODUCT DETAIL MODAL ────────────────────────────────────────────── */
+  .modal-pd { position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity 0.35s ease; }
+  .modal-pd.open { opacity:1; pointer-events:auto; }
+  .modal-pd .modal-bg { position:absolute; inset:0; background:rgba(16,14,23,0.65); backdrop-filter:blur(6px); }
+  .modal-pd .modal-box { position:relative; background:var(--paper); width:min(820px,100%); max-height:90vh; overflow-y:auto; padding:36px 38px 32px; border-radius:22px; box-shadow:0 30px 60px rgba(0,0,0,0.5); display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+  .modal-pd .modal-close { position:absolute; top:16px; right:20px; font-size:1.6rem; color:var(--gray); transition:color 0.2s; line-height:1; }
+  .modal-pd .modal-close:hover { color:var(--pink); }
+  .pd-visual { display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--paper-dim); border-radius:16px; padding:28px 16px; min-height:300px; overflow-y:auto; }
+  .pd-visual .pd-cat-tag { align-self:flex-start; font-size:0.7rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:6px; color:#fff; margin-bottom:14px; }
+  .pd-gallery { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; width:100%; max-height:250px; overflow-y:auto; padding:4px; }
+  .pd-gallery img { width: 80px; height: 80px; object-fit:cover; border-radius:12px; border:2px solid transparent; transition:border 0.2s, transform 0.2s; cursor:zoom-in; }
+  .pd-gallery img:hover { border-color:var(--violet); transform:scale(1.05); }
+  .pd-info h3 { font-weight:700; font-size:1.5rem; margin-bottom:6px; }
+  .pd-info .pd-desc { font-size:0.95rem; color:#55525c; line-height:1.6; margin:10px 0 16px; }
+  .pd-info .pd-price { font-family:'Unbounded',sans-serif; font-weight:700; font-size:1.4rem; color:var(--ink); }
+  .pd-info .pd-actions { display:flex; gap:14px; margin-top:22px; flex-wrap:wrap; }
+  .pd-info .pd-buy { padding:13px 34px; border-radius:10px; background:var(--grad); color:var(--ink); font-size:0.85rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; transition:transform 0.2s ease, box-shadow 0.2s ease; }
+  .pd-info .pd-buy:hover { transform:translateY(-2px); box-shadow:0 8px 24px -4px var(--violet); }
+  .pd-info .pd-buy.added { background:var(--cyan); color:var(--ink); }
+  .pd-info .pd-close-btn { padding:13px 28px; border-radius:10px; border:1.5px solid var(--gray); font-size:0.85rem; font-weight:700; color:var(--gray); transition:background 0.2s ease; }
+  .pd-info .pd-close-btn:hover { background:var(--paper-dim); }
+  @media (max-width:660px) { .modal-pd .modal-box { grid-template-columns:1fr; padding:28px 20px 24px; gap:18px; } .pd-visual { min-height:180px; padding:16px; } .pd-gallery img { width: 60px; height: 60px; } }
+
+  /* ─── CHECKOUT MODAL ────────────────────────────────────────────────── */
+  .modal{ position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity 0.3s ease; }
+  .modal.open{ opacity:1; pointer-events:auto; }
+  .modal .modal-bg{ position:absolute; inset:0; background:rgba(16,14,23,0.6); }
+  .modal .modal-box{ position:relative; background:var(--paper); width:min(560px,100%); max-height:88vh; overflow-y:auto; padding:36px 34px 30px; border-radius:18px; }
+  .modal .modal-box h3{ font-weight:700; font-size:1.4rem; margin-bottom:6px; }
+  .modal .modal-sub{ font-size:0.85rem; color:#77737f; margin-bottom:26px; }
+  .modal .field{ margin-bottom:12px; }
+  .modal .field label{ display:block; font-size:0.72rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--violet); margin-bottom:6px; }
+  .modal .field input, .modal .field textarea{ width:100%; padding:11px 13px; border:1.5px solid #DAD6DF; border-radius:10px; background:#fff; font-family:'Manrope',sans-serif; font-size:0.92rem; color:var(--ink); }
+  .modal .field input:focus, .modal .field textarea:focus{ outline:none; border-color:var(--violet); }
+  .modal .pay-options{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
+  .modal .pay-opt{ border:1.5px solid #DAD6DF; border-radius:10px; padding:12px 8px; text-align:center; font-size:0.8rem; font-weight:700; }
+  .modal .pay-opt input{ display:none; }
+  .modal .pay-opt.selected{ border-color:var(--pink); background:rgba(255,62,136,0.08); color:var(--pink); }
+  .modal .pay-detail{ background:var(--paper-dim); border-radius:10px; padding:14px 16px; font-size:0.85rem; line-height:1.6; margin:10px 0 18px; display:none; }
+  .modal .pay-detail.show{ display:block; }
+  .modal .pay-detail b{ color:var(--pink); }
+  .modal .order-summary{ background:var(--paper-dim); border-radius:12px; padding:16px; font-size:0.86rem; margin:20px 0; }
+  .modal .order-summary .row{ display:flex; justify-content:space-between; padding:3px 0; }
+  .modal .order-summary .total{ font-weight:800; border-top:1px solid #DAD6DF; margin-top:8px; padding-top:8px; font-family:'Unbounded',sans-serif; font-size:0.9rem; }
+  .modal .place-order-btn{ width:100%; padding:15px; border-radius:10px; background:var(--ink); color:var(--paper); font-size:0.88rem; font-weight:800; letter-spacing:0.04em; text-transform:uppercase; transition:background 0.2s ease; }
+  .modal .place-order-btn:hover{ background:var(--pink); }
+  .modal .modal-close{ position:absolute; top:18px; right:20px; font-size:1.5rem; }
+  .modal .modal-close:hover{ color:var(--pink); }
+  .modal .confirm-view{ display:none; text-align:center; padding:10px 4px 4px; }
+  .modal .confirm-view.show{ display:block; }
+  .modal .confirm-view .tick{ width:58px; height:58px; border-radius:50%; background:var(--grad); color:var(--ink); font-size:1.6rem; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-weight:800; }
+  .modal .confirm-view h3{ margin-bottom:10px; }
+  .modal .confirm-view p{ color:#5a5750; font-size:0.92rem; margin-bottom:6px; }
+  .modal .order-ref{ font-family:'Unbounded',sans-serif; font-size:0.85rem; background:var(--paper-dim); border-radius:10px; padding:10px 16px; display:inline-block; margin:14px 0; }
+
+  /* ─── FULL SCREEN IMAGE LIGHTBOX ────────────────────────────────────── */
+  #imageLightbox { position:fixed; inset:0; z-index:200; background:rgba(16,14,23,0.92); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; cursor:grab; }
+  #imageLightbox.open { display:flex; }
+  #imageLightbox .lb-close { position:absolute; top:24px; right:30px; color:#fff; font-size:2.4rem; cursor:pointer; z-index:210; transition:transform 0.2s; background:none; border:none; }
+  #imageLightbox .lb-close:hover { transform:rotate(90deg); color:var(--pink); }
+  #imageLightbox .lb-img-wrapper { width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; touch-action:none; }
+  #imageLightbox img { max-width:80vw; max-height:80vh; object-fit:contain; transition:transform 0.1s ease; user-select:none; cursor:zoom-in; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+  #imageLightbox .lb-zoom-indicator { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.6); font-size:0.85rem; background:rgba(0,0,0,0.4); padding:6px 16px; border-radius:99px; pointer-events:none; z-index:210; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.1); }
+  @media (max-width:600px) { #imageLightbox img { max-width:95vw; max-height:80vh; } }
+</style>
+</head>
+<body>
+
+<canvas id="storeCanvas" aria-hidden="true"></canvas>
+
+<nav>
+  <a href="#top" class="brand"><span class="mark">FF</span>FASHION FRENZY</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#collection" id="nav-collection">Collection</a>
+      <a href="#about" id="nav-about">Visit Us</a>
+    </div>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('en')" id="lang-en">EN</button>
+      <button class="lang-btn" onclick="setLang('bn')" id="lang-bn">বাংলা</button>
+    </div>
+    <button class="cart-btn" onclick="openCart()" aria-label="Open cart"><span id="cart-label">Cart</span> <span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div>
+    <div class="eyebrow" id="hero-eyebrow"><span class="dot"></span>MIRPUR SHOPPING CENTER, LEVEL 5</div>
+    <h1 class="display" id="hero-title">Crafted for the<br><span class="grad-text">Avant‑Garde.</span></h1>
+  </div>
+  <div class="hero-side" id="hero-desc">
+    <p>Redefine your silhouette with our precision-engineered streetwear. Where architectural tailoring meets uncompromising fabric luxury.</p>
+    <p>Curated exclusively for the discerning modern man. Each piece is a bold statement of urban sophistication and refined style.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">🖤 New Arrivals Weekly</span>
+      <span class="hero-tag">🚚 Home Delivery</span>
+    </div>
+  </div>
+</header>
+
+<div class="cat-wrap" id="collection">
+  <div class="cat-label">
+    <h2 id="cat-title">Shop by category</h2>
+    <span id="catTotalCount">06 pieces / in stock</span>
+  </div>
+  <div class="cat-grid" id="categoryGrid"></div>
+</div>
+
+<div class="window-wrap">
+  <div class="window-label">
+    <h2 id="rackTitle">This week's rack</h2>
+    <span class="window-count" id="rackCount">06 pieces / in stock</span>
+  </div>
+  <div class="filter-bar" id="filterBar">
+    <span id="filter-label">Showing:</span>
+    <span class="filter-chip" id="filterChip">All <button onclick="clearFilter()" aria-label="Clear filter">&times;</button></span>
+  </div>
+  <div class="panes" id="productGrid"></div>
+</div>
+
+<section class="about" id="about">
+  <div class="about-left">
+    <h2>The Nexus of<br>Modern Menswear</h2>
+    <p>Fashion Frenzy is more than a retail destination—it's a sartorial movement. Born in the heart of Mirpur, we bridge the gap between global vogue and local finesse. Our flagship space houses meticulously curated collections that resonate with the ambition of the modern man.</p>
+    <div class="about-stats">
+      <div>400+ <span>Styles Available</span></div>
+      <div>10k+ <span>Happy Customers</span></div>
+      <div>100% <span>Authentic Pieces</span></div>
+    </div>
+  </div>
+  <div class="about-right">
+    <h3>📍 Visit Our Flagship</h3>
+    <div class="info-item">
+      <div class="info-icon">📍</div>
+      <div class="info-text"><b>Address</b>Shop No-552, Level-5 (Lift-4)<br>Mirpur Shopping Center, Mirpur-2, Dhaka-1216</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">📞</div>
+      <div class="info-text"><b>Call / WhatsApp</b>01976-913980</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">🕐</div>
+      <div class="info-text"><b>Store Hours</b>11:00 AM – 9:00 PM, Everyday</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span id="footer-text">Fashion Frenzy — Mirpur Shopping Center, Dhaka</span>
+  <div class="socials">
+    <a href="#">Facebook</a>
+    <a href="#">Instagram</a>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="drawer-head">
+    <h3 id="cart-head">Your cart</h3>
+    <button class="close-x" onclick="closeCart()" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="drawer-foot">
+    <div class="subtotal-row"><span id="subtotal-label">Subtotal</span><span id="cartSubtotal">৳0</span></div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="openCheckout()" disabled id="checkout-label">Proceed to checkout</button>
+  </div>
+</aside>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-pd" id="productDetailModal">
+  <div class="modal-bg" onclick="closeProductDetail()"></div>
+  <div class="modal-box" id="pdModalBox">
+    <button class="modal-close" onclick="closeProductDetail()" aria-label="Close">&times;</button>
+    <div class="pd-visual" id="pdVisual">
+      <span class="pd-cat-tag" id="pdCatTag">Category</span>
+      <div class="pd-gallery" id="pdGallery"></div>
+    </div>
+    <div class="pd-info">
+      <h3 id="pdName">Product Name</h3>
+      <div class="pd-desc" id="pdDesc">Description</div>
+      <div class="pd-price" id="pdPrice">৳0</div>
+      <div class="pd-actions">
+        <button class="pd-buy" id="pdBuyBtn" onclick="buyFromDetail()">Buy</button>
+        <button class="pd-close-btn" onclick="closeProductDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal" id="checkoutModal">
+  <div class="modal-bg" onclick="closeAll()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAll()" aria-label="Close">&times;</button>
+    <div id="checkoutForm">
+      <h3 id="checkout-title">Checkout</h3>
+      <p class="modal-sub" id="checkout-sub">Tell us where to send it, and how you'll pay.</p>
+      <form id="orderForm" onsubmit="submitOrder(event)">
+        <div class="field">
+          <label for="custName" id="label-name">Full name</label>
+          <input type="text" id="custName" required>
+        </div>
+        <div class="field">
+          <label for="custPhone" id="label-phone">Phone number</label>
+          <input type="tel" id="custPhone" required placeholder="01XXXXXXXXX">
+        </div>
+        <div class="field">
+          <label for="custRegion" id="label-region">Region / Division</label>
+          <input type="text" id="custRegion" required placeholder="e.g. Dhaka">
+        </div>
+        <div class="field">
+          <label for="custDistrict" id="label-district">District</label>
+          <input type="text" id="custDistrict" required placeholder="e.g. Mirpur">
+        </div>
+        <div class="field">
+          <label for="custPolice" id="label-police">Police Station / Thana</label>
+          <input type="text" id="custPolice" required placeholder="e.g. Pallabi">
+        </div>
+        <div class="field">
+          <label for="custArea" id="label-area">Area / Moholla</label>
+          <input type="text" id="custArea" required placeholder="e.g. Rupnagar">
+        </div>
+        <div class="field">
+          <label for="custHolding" id="label-holding">Holding / House Number</label>
+          <input type="text" id="custHolding" required placeholder="e.g. 42">
+        </div>
+        <div class="field">
+          <label for="custRoad" id="label-road">Road / Street</label>
+          <input type="text" id="custRoad" required placeholder="e.g. Road 12">
+        </div>
+        <div class="field">
+          <label id="label-pay">Payment method</label>
+          <div class="pay-options">
+            <label class="pay-opt" id="opt-cod"><input type="radio" name="pay" value="Cash on Delivery" checked onchange="selectPay('cod')">COD</label>
+            <label class="pay-opt" id="opt-bkash"><input type="radio" name="pay" value="bKash" onchange="selectPay('bkash')">bKash</label>
+            <label class="pay-opt" id="opt-nagad"><input type="radio" name="pay" value="Nagad" onchange="selectPay('nagad')">Nagad</label>
+          </div>
+          <div class="pay-detail" id="detail-cod">Pay in cash when your order arrives at the delivery address above. No advance payment needed.</div>
+          <div class="pay-detail" id="detail-bkash">Send the total amount to <b>01976-913980</b> (bKash Personal) using "Send Money". Then enter the number you paid from and the Transaction ID below.</div>
+          <div class="pay-detail" id="detail-nagad">Send the total amount to <b>01976-913980</b> (Nagad Personal) using "Send Money". Then enter the number you paid from and the Transaction ID below.</div>
+        </div>
+        <div id="mfsFields" style="display:none;">
+          <div class="field">
+            <label for="mfsNumber">Number you paid from</label>
+            <input type="tel" id="mfsNumber" placeholder="01XXXXXXXXX">
+          </div>
+          <div class="field">
+            <label for="mfsTrx">Transaction ID</label>
+            <input type="text" id="mfsTrx" placeholder="e.g. 8N7K2X9QZP">
+          </div>
+        </div>
+        <div class="order-summary" id="orderSummary"></div>
+        <button type="submit" class="place-order-btn" id="btn-place">Place order</button>
+      </form>
+    </div>
+    <div class="confirm-view" id="confirmView">
+      <div class="tick">&#10003;</div>
+      <h3 id="confirm-title">Order received</h3>
+      <p id="confirm-desc">Thanks — we'll call you shortly to confirm delivery.</p>
+      <div class="order-ref" id="orderRef"></div>
+      <p id="paySummaryLine"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FULL SCREEN IMAGE LIGHTBOX ──────────────────────────────────────── -->
+<div id="imageLightbox" onclick="closeLightbox()">
+  <button class="lb-close" aria-label="Close lightbox">&times;</button>
+  <div class="lb-img-wrapper" id="lbWrapper">
+    <img id="lbImg" src="" alt="Product Zoom" onclick="event.stopPropagation();" />
+  </div>
+  <div class="lb-zoom-indicator">Scroll to Zoom · Drag to Pan</div>
+</div>
+
+<form name="order" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name"> <input type="tel" name="phone"> <textarea name="address"></textarea>
+  <input type="text" name="payment_method"> <input type="tel" name="payment_number"> <input type="text" name="transaction_id">
+  <textarea name="order_items"></textarea> <input type="text" name="order_total"> <input type="text" name="order_ref">
+</form>
+
+<script>
+  // ─── LANGUAGE TRANSLATIONS ──────────────────────────────────────────────
+  const LANG = {
+    en: {
+      'nav-collection': 'Collection', 'nav-about': 'Visit Us', 'cart-label': 'Cart',
+      'hero-eyebrow': 'MIRPUR SHOPPING CENTER, LEVEL 5',
+      'hero-title': 'Crafted for the<br><span class="grad-text">Avant‑Garde.</span>',
+      'hero-desc': '<p>Redefine your silhouette with our precision-engineered streetwear. Where architectural tailoring meets uncompromising fabric luxury.</p><p>Curated exclusively for the discerning modern man. Each piece is a bold statement of urban sophistication and refined style.</p>',
+      'cat-title': 'Shop by category',
+      'rackTitle': "This week's rack",
+      'filter-label': 'Showing:',
+      'cart-head': 'Your cart', 'subtotal-label': 'Subtotal', 'checkout-label': 'Proceed to checkout',
+      'pd-buy': 'Buy', 'pd-close': 'Close',
+      'checkout-title': 'Checkout', 'checkout-sub': 'Tell us where to send it, and how you\'ll pay.',
+      'label-name': 'Full name', 'label-phone': 'Phone number',
+      'label-region': 'Region / Division', 'label-district': 'District', 'label-police': 'Police Station / Thana',
+      'label-area': 'Area / Moholla', 'label-holding': 'Holding / House Number', 'label-road': 'Road / Street',
+      'label-pay': 'Payment method', 'btn-place': 'Place order',
+      'confirm-title': 'Order received', 'confirm-desc': 'Thanks — we\'ll call you shortly to confirm delivery.',
+      'footer-text': 'Fashion Frenzy — Mirpur Shopping Center, Dhaka'
+    },
+    bn: {
+      'nav-collection': 'কলেকশন', 'nav-about': 'আমাদের দেখুন', 'cart-label': 'কার্ট',
+      'hero-eyebrow': 'মিরপুর শপিং সেন্টার, ৫ম তলা',
+      'hero-title': 'অ্যাভান্ট-গার্ডের জন্য<br><span class="grad-text">নির্মিত।</span>',
+      'hero-desc': '<p>আমাদের প্রিসিশন-ইঞ্জিনিয়ারড স্ট্রিটওয়্যার দিয়ে আপনার সিলুয়েটকে নতুন করে সংজ্ঞায়িত করুন। যেখানে আর্কিটেকচারাল টেইলরিং মিলিত হয় আপোষহীন ফ্যাব্রিক বিলাসিতার সাথে।</p><p>বিবেচক আধুনিক পুরুষের জন্য একচেটিয়াভাবে কিউরেট করা। প্রতিটি টুকরো শহুরে পরিশীলিততা এবং পরিমার্জিত শৈলীর একটি সাহসী বিবৃতি।</p>',
+      'cat-title': 'ক্যাটাগরি অনুযায়ী কেনাকাটা করুন',
+      'rackTitle': 'এই সপ্তাহের র্যাক',
+      'filter-label': 'দেখানো হচ্ছে:',
+      'cart-head': 'আপনার কার্ট', 'subtotal-label': 'সাবটোটাল', 'checkout-label': 'চেকআউটে যান',
+      'pd-buy': 'কিনুন', 'pd-close': 'বন্ধ করুন',
+      'checkout-title': 'চেকআউট', 'checkout-sub': 'আমাদের বলুন কোথায় পাঠাতে হবে এবং কীভাবে পেমেন্ট করবেন।',
+      'label-name': 'পুরো নাম', 'label-phone': 'ফোন নম্বর',
+      'label-region': 'বিভাগ', 'label-district': 'জেলা', 'label-police': 'থানা',
+      'label-area': 'এলাকা', 'label-holding': 'হোল্ডিং নম্বর', 'label-road': 'রোড',
+      'label-pay': 'পেমেন্ট মেথড', 'btn-place': 'অর্ডার করুন',
+      'confirm-title': 'অর্ডার গৃহীত', 'confirm-desc': 'ধন্যবাদ — আমরা ডেলিভারি কনফর্ম করতে শীঘ্রই কল করব।',
+      'footer-text': 'ফ্যাশন ফ্রেঞ্জি — মিরপুর শপিং সেন্টার, ঢাকা'
+    }
+  };
+
+  let currentLang = 'en';
+  const API_URL = 'http://localhost:3000/api';
+  let PRODUCTS = [];
+  let cart = {};
+  let currentPay = 'Cash on Delivery';
+  let activeCategory = null;
+  let detailProductId = null;
+
+  // ─── PREMIUM CATEGORY ICONS (LOGOS) ──────────────────────────────────
+  const CATEGORIES = [
+    { name:'Shirts', accent:'#7A5CFF', grad:'linear-gradient(120deg,#7A5CFF,#17E3D0)', icon:`<svg viewBox="0 0 24 24"><path d="M3 6l2.5-1.5L7 6l1.5 2L10 6l2 2 2-2 1.5 2L17 6l1.5-1.5L21 6v15H3z" fill="#100E17"/><path d="M7 6h10v10H7z" fill="none" stroke="#100E17" stroke-width="1.5"/></svg>` },
+    { name:'T-Shirts & Polos', accent:'#FF3E88', grad:'linear-gradient(120deg,#FF3E88,#7A5CFF)', icon:`<svg viewBox="0 0 24 24"><path d="M6 5l-3 2 2.5 3L7 8v13h10V8l1.5 2L21 7l-3-2-3 1.5L12 6l-3-1.5z" fill="#100E17"/><circle cx="12" cy="12" r="1.5" fill="none" stroke="#100E17" stroke-width="1.5"/></svg>` },
+    { name:'Panjabi & Ethnic Wear', accent:'#FF8A3D', grad:'linear-gradient(120deg,#FF8A3D,#FFC93C)', icon:`<svg viewBox="0 0 24 24"><path d="M9 3l3-1.5L15 3l2 2-1.5 2L15 9v12H9V9L7.5 7L6 5l2-2z" fill="#100E17"/><path d="M9 12h6" stroke="#100E17" stroke-width="1.5" stroke-dasharray="2 1"/></svg>` },
+    { name:'Jeans & Trousers', accent:'#FFC93C', grad:'linear-gradient(120deg,#FFC93C,#FF3E88)', icon:`<svg viewBox="0 0 24 24"><path d="M6 2h12l1 12-4 8h-2v-5H9v5H7l-4-8z" fill="#100E17"/><rect x="9" y="6" width="6" height="3" rx="0.5" fill="none" stroke="#fff" stroke-width="1"/></svg>` },
+    { name:'Footwear', accent:'#17E3D0', grad:'linear-gradient(120deg,#17E3D0,#7A5CFF)', icon:`<svg viewBox="0 0 24 24"><path d="M2 14c0-2 1.5-3 4-3h10c3 0 5 1 5 4s-2 4-5 4H6c-2 0-4-1-4-5z" fill="#100E17"/><path d="M8 11l1-4 3 4-1 3" fill="none" stroke="#fff" stroke-width="1.5"/></svg>` },
+    { name:'Jackets & Outerwear', accent:'#7A5CFF', grad:'linear-gradient(120deg,#7A5CFF,#FF3E88)', icon:`<svg viewBox="0 0 24 24"><path d="M4 5l3-1.5L9 5l1.5 2L12 5l1.5 2L15 5l2-1.5L20 5l1 16H3z" fill="#100E17"/><circle cx="12" cy="12" r="2" fill="none" stroke="#fff" stroke-width="1.5"/></svg>` },
+  ];
+
+  function fmt(n){ return '৳' + n.toLocaleString('en-BD'); }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'lang-' + lang));
+    applyTranslations();
+  }
+
+  function applyTranslations() {
+    const t = LANG[currentLang];
+    Object.keys(t).forEach(key => {
+      const el = document.getElementById(key);
+      if (el) {
+        if (key === 'hero-desc' || key === 'hero-title') {
+          el.innerHTML = t[key];
+        } else {
+          el.textContent = t[key];
+        }
+      }
+    });
+    document.getElementById('cart-label').textContent = t['cart-label'];
+  }
+
+  function trackAction(action, productId, productName = '') {
+    let sessionId = localStorage.getItem('ff_session');
+    if (!sessionId) {
+      sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+      localStorage.setItem('ff_session', sessionId);
+    }
+    fetch(API_URL + '/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, action, productId, details: productName })
+    }).catch(() => {});
+  }
+
+  async function fetchProducts() {
+    try {
+      const res = await fetch(API_URL + '/products');
+      PRODUCTS = await res.json();
+    } catch (e) { console.warn('Backend offline'); PRODUCTS = []; }
+    renderCategories();
+    renderProducts();
+    renderCart();
+  }
+
+  const bc = new BroadcastChannel('fashion_frenzy_updates');
+  bc.onmessage = (event) => { if (event.data.type === 'products_updated') fetchProducts(); };
+  setInterval(fetchProducts, 5000);
+
+  // ─── RENDER CATEGORIES (WITH 3D CRYSTAL ART) ──────────────────────────
+  function renderCategories(){
+    const grid = document.getElementById('categoryGrid');
+    document.getElementById('catTotalCount').textContent = `${PRODUCTS.length} pieces / in stock`;
+    grid.innerHTML = CATEGORIES.map(c => {
+      const count = PRODUCTS.filter(p => p.tag === c.name).length;
+      return `
+        <button class="cat-tile" id="tile-${c.name}" style="--tile-grad:${c.grad}; --tile-accent:${c.accent}" onclick="filterCategory('${c.name}')">
+          <div class="bg-art"></div>
+          <span class="arrow">↗</span>
+          <span class="cat-icon" style="background:${c.accent}">${c.icon}</span>
+          <h4>${c.name}</h4>
+          <p>${count} item${count === 1 ? '' : 's'}</p>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function filterCategory(name){
+    trackAction('filter_category', name, name);
+    activeCategory = name;
+    document.querySelectorAll('.cat-tile').forEach(t => t.classList.toggle('active', t.id === 'tile-' + name));
+    document.getElementById('rackTitle').textContent = name;
+    document.getElementById('filterBar').classList.add('show');
+    document.getElementById('filterChip').innerHTML = `${name} <button onclick="clearFilter()" aria-label="Clear filter">&times;</button>`;
+    renderProducts();
+    document.querySelector('.window-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function clearFilter(){
+    activeCategory = null;
+    document.querySelectorAll('.cat-tile').forEach(t => t.classList.remove('active'));
+    document.getElementById('rackTitle').textContent = LANG[currentLang]['rackTitle'] || "This week's rack";
+    document.getElementById('filterBar').classList.remove('show');
+    renderProducts();
+  }
+
+  function renderProducts(){
+    const grid = document.getElementById('productGrid');
+    const visible = activeCategory ? PRODUCTS.filter(p => p.tag === activeCategory) : PRODUCTS;
+    document.getElementById('rackCount').textContent = `${visible.length} piece${visible.length === 1 ? '' : 's'} / in stock`;
+    grid.innerHTML = visible.map(p => {
+      const stock = p.inventory !== undefined && p.inventory !== null ? p.inventory : 0;
+      const isSoldOut = stock === 0;
+      const stockLabel = isSoldOut ? '🔴 Sold Out' : `✅ ${stock} left`;
+      const stockClass = isSoldOut ? 'stock-soldout' : 'stock-available';
+      const imgHtml = (p.imageBase64List && p.imageBase64List.length > 0) ? `<img src="${p.imageBase64List[0]}" />` : p.svg;
+      return `
+        <div class="pane" onclick="openProductDetail('${p.id}')">
+          <div class="pane-topbar" style="background:${p.color}"></div>
+          <div class="pane-inner">
+            <span class="cat-chip" style="background:${p.color}">${p.tag}</span>
+            <div class="garment">${imgHtml}</div>
+            <h3>${p.name}</h3>
+            <div class="desc">${p.desc.substring(0, 60)}${p.desc.length > 60 ? '…' : ''}</div>
+            <span class="stock-status ${stockClass}">${stockLabel}</span>
+            <div class="meta">
+              <span class="price">${fmt(p.price)}</span>
+              <button class="buy-btn" id="btn-${p.id}" onclick="event.stopPropagation(); addToCart('${p.id}')" ${isSoldOut ? 'disabled' : ''}>${isSoldOut ? 'Sold Out' : LANG[currentLang]['pd-buy'] || 'Buy'}</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openProductDetail(id) {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (!p) return;
+    trackAction('view_product', id, p.name);
+    detailProductId = id;
+    document.getElementById('pdCatTag').textContent = p.tag;
+    document.getElementById('pdCatTag').style.background = p.color;
+    
+    const gallery = document.getElementById('pdGallery');
+    gallery.innerHTML = (p.imageBase64List && p.imageBase64List.length > 0)
+      ? p.imageBase64List.map(img => `<img src="${img}" onclick="event.stopPropagation(); openLightbox('${img}')" />`).join('')
+      : p.svg;
+
+    document.getElementById('pdName').textContent = p.name;
+    document.getElementById('pdDesc').textContent = p.desc;
+    document.getElementById('pdPrice').textContent = fmt(p.price);
+    const buyBtn = document.getElementById('pdBuyBtn');
+    const stock = p.inventory || 0;
+    buyBtn.textContent = stock === 0 ? 'Sold Out' : LANG[currentLang]['pd-buy'] || 'Buy';
+    buyBtn.disabled = stock === 0;
+    buyBtn.classList.remove('added');
+    document.getElementById('productDetailModal').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function closeProductDetail() { document.getElementById('productDetailModal').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+  function buyFromDetail() {
+    if (!detailProductId) return;
+    addToCart(detailProductId);
+    const btn = document.getElementById('pdBuyBtn');
+    btn.textContent = 'Added ✓';
+    btn.classList.add('added');
+    setTimeout(() => { 
+      const p = PRODUCTS.find(x => x.id === detailProductId);
+      const stock = p.inventory || 0;
+      btn.textContent = stock === 0 ? 'Sold Out' : LANG[currentLang]['pd-buy'] || 'Buy'; 
+      btn.classList.remove('added'); 
+    }, 1000);
+  }
+
+  function addToCart(id){
+    const p = PRODUCTS.find(x => x.id === id);
+    const stock = p.inventory || 0;
+    if (!p || stock === 0) return;
+    trackAction('add_to_cart', id, p.name);
+    cart[id] = (cart[id] || 0) + 1;
+    renderCart();
+    const btn = document.getElementById('btn-' + id);
+    if (btn) { btn.textContent = 'Added'; btn.classList.add('added'); setTimeout(() => { btn.textContent = stock === 0 ? 'Sold Out' : LANG[currentLang]['pd-buy'] || 'Buy'; btn.classList.remove('added'); }, 900); }
+  }
+
+  function changeQty(id, delta){ if(!cart[id]) return; cart[id] += delta; if(cart[id] <= 0) delete cart[id]; renderCart(); }
+  function removeItem(id){ delete cart[id]; renderCart(); }
+  function cartLines(){ return Object.entries(cart).map(([id, qty]) => { const p = PRODUCTS.find(x => x.id === id); return { ...p, qty, lineTotal: p.price * qty }; }); }
+  function cartTotal(){ return cartLines().reduce((s, l) => s + l.lineTotal, 0); }
+  function cartCount(){ return Object.values(cart).reduce((s, q) => s + q, 0); }
+
+  function renderCart(){
+    const lines = cartLines();
+    document.getElementById('cartCount').textContent = cartCount();
+    document.getElementById('cartSubtotal').textContent = fmt(cartTotal());
+    document.getElementById('checkoutBtn').disabled = lines.length === 0;
+    const container = document.getElementById('cartItems');
+    if(lines.length === 0){ container.innerHTML = `<div class="cart-empty">${LANG[currentLang]['cart-head'] || 'Your cart'} is empty.</div>`; return; }
+    container.innerHTML = lines.map(l => `
+      <div class="cart-row">
+        <div class="ci-icon">${l.imageBase64List && l.imageBase64List.length > 0 ? `<img src="${l.imageBase64List[0]}" style="width:34px;height:auto;border-radius:6px;object-fit:cover;" />` : l.svg}</div>
+        <div class="ci-info">
+          <h4>${l.name}</h4>
+          <div class="qty-ctrl">
+            <button onclick="changeQty('${l.id}',-1)" aria-label="Decrease">&minus;</button>
+            <span>${l.qty}</span>
+            <button onclick="changeQty('${l.id}',1)" aria-label="Increase">&plus;</button>
+          </div>
+          <a class="remove-link" onclick="removeItem('${l.id}')">${LANG[currentLang]['pd-close'] || 'Remove'}</a>
+        </div>
+        <div class="ci-price">${fmt(l.lineTotal)}</div>
+      </div>
+    `).join('');
+  }
+
+  function openCart(){ document.getElementById('drawer').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
+  function closeCart(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+  function closeAll(){ closeCart(); closeProductDetail(); document.getElementById('checkoutModal').classList.remove('open'); }
+
+  function openCheckout(){
+    if(cartCount() === 0) return;
+    closeCart();
+    document.getElementById('checkoutModal').classList.add('open');
+    document.getElementById('checkoutForm').style.display = 'block';
+    document.getElementById('confirmView').classList.remove('show');
+    renderOrderSummary();
+  }
+
+  function selectPay(type){
+    currentPay = type === 'cod' ? 'Cash on Delivery' : type === 'bkash' ? 'bKash' : 'Nagad';
+    ['cod','bkash','nagad'].forEach(t => {
+      document.getElementById('opt-' + t).classList.toggle('selected', t === type);
+      document.getElementById('detail-' + t).classList.toggle('show', t === type);
+    });
+    document.getElementById('mfsFields').style.display = type === 'cod' ? 'none' : 'block';
+    document.getElementById('mfsNumber').required = type !== 'cod';
+    document.getElementById('mfsTrx').required = type !== 'cod';
+  }
+
+  function renderOrderSummary(){
+    const lines = cartLines();
+    const total = cartTotal();
+    document.getElementById('orderSummary').innerHTML = `
+      ${lines.map(l => `<div class="row"><span>${l.name} &times; ${l.qty}</span><span>${fmt(l.lineTotal)}</span></div>`).join('')}
+      <div class="row total"><span>${LANG[currentLang]['subtotal-label'] || 'Total'}</span><span>${fmt(total)}</span></div>
+    `;
+  }
+
+  async function submitOrder(e){
+    e.preventDefault();
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const addressDetail = {
+      region: document.getElementById('custRegion').value.trim(),
+      district: document.getElementById('custDistrict').value.trim(),
+      policeStation: document.getElementById('custPolice').value.trim(),
+      area: document.getElementById('custArea').value.trim(),
+      holding: document.getElementById('custHolding').value.trim(),
+      road: document.getElementById('custRoad').value.trim()
+    };
+    const mfsNumber = document.getElementById('mfsNumber').value.trim();
+    const mfsTrx = document.getElementById('mfsTrx').value.trim();
+    const lines = cartLines();
+    const total = cartTotal();
+    const orderRef = 'FF-' + Date.now().toString().slice(-8);
+    const order_items = lines.map(l => ({ id: l.id, name: l.name, qty: l.qty, price: l.price }));
+    const orderData = { name, phone, addressDetail, payment_method: currentPay, payment_number: mfsNumber, transaction_id: mfsTrx, order_items, order_total: String(total), order_ref: orderRef };
+    try {
+      const res = await fetch(API_URL + '/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+      const data = await res.json();
+      document.getElementById('checkoutForm').style.display = 'none';
+      document.getElementById('confirmView').classList.add('show');
+      document.getElementById('orderRef').textContent = 'Order ref: ' + data.orderRef;
+      document.getElementById('paySummaryLine').textContent =
+        currentPay === 'Cash on Delivery' ? `Pay ${fmt(total)} in cash on delivery.` : `Paid ${fmt(total)} via ${currentPay} — we'll verify Transaction ID ${mfsTrx}.`;
+      cart = {};
+      renderCart();
+      trackAction('place_order', null, `Total: ${fmt(total)}`);
+      setTimeout(fetchProducts, 1000);
+    } catch (err) { alert('Order failed. Is the backend running?'); }
+  }
+
+  // ─── LIGHTBOX: ZOOM & PAN LOGIC ───────────────────────────────────────
+  let lbScale = 1, lbX = 0, lbY = 0, isDragging = false, startX, startY;
+  const lb = document.getElementById('imageLightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbWrapper = document.getElementById('lbWrapper');
+
+  function openLightbox(src) {
+    lb.classList.add('open'); lbImg.src = src; 
+    lbScale = 1; lbX = 0; lbY = 0;
+    updateLbTransform();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('open'); document.body.style.overflow = '';
+  }
+
+  function updateLbTransform() {
+    lbImg.style.transform = `translate(${lbX}px, ${lbY}px) scale(${lbScale})`;
+  }
+
+  // Zoom via Mouse Wheel
+  lbImg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    lbScale = Math.min(5, Math.max(1, lbScale + delta));
+    updateLbTransform();
+  });
+
+  // Drag to Pan
+  lbWrapper.addEventListener('mousedown', (e) => {
+    if(lbScale > 1) { isDragging = true; startX = e.clientX - lbX; startY = e.clientY - lbY; lbWrapper.style.cursor = 'grabbing'; }
+  });
+  window.addEventListener('mousemove', (e) => {
+    if(isDragging) { lbX = e.clientX - startX; lbY = e.clientY - startY; updateLbTransform(); }
+  });
+  window.addEventListener('mouseup', () => { isDragging = false; lbWrapper.style.cursor = 'grab'; });
+
+  // ─── INIT ──────────────────────────────────────────────────────────────
+  fetchProducts();
+  setLang('en');
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  const canvas = document.getElementById('storeCanvas');
+  if(!canvas || !window.THREE) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x060509);
+  scene.fog = new THREE.FogExp2(0x060509, 0.024);
+  const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 220);
+  const Z_START = 15, Z_END = -175;
+  camera.position.set(0, 2.4, Z_START);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  if(renderer.outputColorSpace !== undefined) renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+  scene.add(new THREE.AmbientLight(0x3a3350, 0.5));
+  scene.add(new THREE.HemisphereLight(0x7a5cff, 0x06050a, 0.4));
+  const PALETTE = [0x17e3d0, 0xff3e88, 0x7a5cff, 0xffc93c, 0xff8a3d];
+  function makeGlowTexture(){
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const ctx = c.getContext('2d');
+    const g = ctx.createRadialGradient(64,64,0,64,64,64);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(0.35, 'rgba(255,255,255,0.55)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,128,128);
+    return new THREE.CanvasTexture(c);
+  }
+  const glowTex = makeGlowTexture();
+  const floorY = -2.4, floorZ = -80;
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(28, 220), new THREE.MeshStandardMaterial({ color:0x0a0912, roughness:0.12, metalness:0.85 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.set(0, floorY, floorZ); scene.add(floor);
+  const grid = new THREE.GridHelper(28, 40, 0x7a5cff, 0x2a2340); grid.position.set(0, floorY + 0.02, floorZ); grid.material.transparent = true; grid.material.opacity = 0.32; scene.add(grid);
+  const runway = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 220), new THREE.MeshBasicMaterial({ color:0x9db4ff, transparent:true, opacity:0.1, blending:THREE.AdditiveBlending }));
+  runway.rotation.x = -Math.PI / 2; runway.position.set(0, floorY + 0.03, floorZ); scene.add(runway);
+  const beamSpecs = [ { color:0x17e3d0, z:9 }, { color:0xff3e88, z:-20 }, { color:0x7a5cff, z:-50 }, { color:0xffc93c, z:-80 }, { color:0xff8a3d, z:-110 }, { color:0x17e3d0, z:-140 }, { color:0xff3e88, z:-168 } ];
+  beamSpecs.forEach(spec => {
+    const l = new THREE.PointLight(spec.color, 6, 36, 2); l.position.set(0, 5.5, spec.z); scene.add(l);
+    const beam = new THREE.Mesh(new THREE.ConeGeometry(2.6, 8, 24, 1, true), new THREE.MeshBasicMaterial({ color:spec.color, transparent:true, opacity:0.07, blending:THREE.AdditiveBlending, side:THREE.DoubleSide, depthWrite:false }));
+    beam.position.set(0, 6.4, spec.z); scene.add(beam);
+    const pool = new THREE.Sprite(new THREE.SpriteMaterial({ map:glowTex, color:spec.color, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending, depthWrite:false }));
+    pool.scale.set(6, 6, 1); pool.position.set(0, floorY + 0.05, spec.z); pool.material.rotation = Math.PI / 2; scene.add(pool);
+  });
+  function shirtSilhouette(){ const s = new THREE.Shape(); s.moveTo(-0.55, 1.0); s.lineTo(-0.15, 1.25); s.lineTo(0, 1.05); s.lineTo(0.15, 1.25); s.lineTo(0.55, 1.0); s.lineTo(0.55, -1.1); s.lineTo(-0.55, -1.1); s.lineTo(-0.55, 1.0); return s; }
+  function trouserSilhouette(){ const s = new THREE.Shape(); s.moveTo(-0.5, 1.1); s.lineTo(0.5, 1.1); s.lineTo(0.55, -0.2); s.lineTo(0.12, -1.2); s.lineTo(0, -0.2); s.lineTo(-0.12, -1.2); s.lineTo(-0.55, -0.2); s.lineTo(-0.5, 1.1); return s; }
+  function panjabiSilhouette(){ const s = new THREE.Shape(); s.moveTo(-0.4, 1.15); s.lineTo(0, 1.35); s.lineTo(0.4, 1.15); s.lineTo(0.5, 0.9); s.lineTo(0.42, 0.75); s.lineTo(0.42, -1.4); s.lineTo(-0.42, -1.4); s.lineTo(-0.42, 0.75); s.lineTo(-0.5, 0.9); s.lineTo(-0.4, 1.15); return s; }
+  function jacketSilhouette(){ const s = new THREE.Shape(); s.moveTo(-0.6, 1.05); s.lineTo(-0.2, 1.3); s.lineTo(0, 1.0); s.lineTo(0.2, 1.3); s.lineTo(0.6, 1.05); s.lineTo(0.65, -1.15); s.lineTo(-0.65, -1.15); s.lineTo(-0.6, 1.05); return s; }
+  const garmentBuilders = [shirtSilhouette, trouserSilhouette, panjabiSilhouette, jacketSilhouette];
+  const extrudeSettings = { depth:0.1, bevelEnabled:true, bevelThickness:0.02, bevelSize:0.02, bevelSegments:1 };
+  const garmentGroup = new THREE.Group(); scene.add(garmentGroup); const floaters = []; const reflections = [];
+  function addGarment(x, z, typeIdx, colorIdx){
+    const color = PALETTE[colorIdx % PALETTE.length];
+    const shape = garmentBuilders[typeIdx](); const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings); geo.center();
+    const mat = new THREE.MeshPhysicalMaterial({ color, metalness:0.1, roughness:0.15, clearcoat:1, clearcoatRoughness:0.1, transparent:true, opacity:0.42, side:THREE.DoubleSide, emissive:color, emissiveIntensity:0.18 });
+    const mesh = new THREE.Mesh(geo, mat); const scale = 1.5 + Math.random() * 0.5; mesh.scale.set(scale, scale, 1); mesh.position.set(x, 1.7 + Math.random() * 0.4, z); mesh.rotation.y = (x < 0 ? 0.5 : -0.5) + (Math.random() - 0.5) * 0.25;
+    const rim = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, wireframe:true, transparent:true, opacity:0.65, blending:THREE.AdditiveBlending, depthWrite:false })); rim.scale.setScalar(1.015); mesh.add(rim);
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.018, 8, 24), new THREE.MeshBasicMaterial({ color, transparent:true, opacity:0.8, blending:THREE.AdditiveBlending, depthWrite:false })); halo.position.set(0, 1.42, 0); mesh.add(halo);
+    mesh.userData.floatOffset = Math.random() * Math.PI * 2; garmentGroup.add(mesh); floaters.push(mesh);
+    const reflMat = mat.clone(); reflMat.opacity = 0.14; reflMat.emissiveIntensity = 0.06; const refl = new THREE.Mesh(geo, reflMat); refl.scale.set(scale, -scale, 1); refl.rotation.copy(mesh.rotation); refl.position.set(x, 2 * floorY - mesh.position.y, z); scene.add(refl); reflections.push({ mesh:refl, source:mesh });
+  }
+  const RACK_X = 6.2; let typeCursor = 0, colorCursor = 0; for(let z = 6; z > Z_END + 10; z -= 17){ addGarment(-RACK_X, z, typeCursor % garmentBuilders.length, colorCursor % PALETTE.length); typeCursor++; colorCursor++; addGarment(RACK_X, z - 8, typeCursor % garmentBuilders.length, colorCursor % PALETTE.length); typeCursor++; colorCursor++; }
+  [-RACK_X, RACK_X].forEach((x, i) => { const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 210, 8), new THREE.MeshBasicMaterial({ color: i === 0 ? 0x17e3d0 : 0xff3e88, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending })); rail.rotation.x = Math.PI / 2; rail.position.set(x, 3.3, floorZ); scene.add(rail); });
+  const bokehCount = 90; const bokehGeo = new THREE.BufferGeometry(); const bokehPos = new Float32Array(bokehCount * 3); const bokehCol = new Float32Array(bokehCount * 3); const tmpColor = new THREE.Color(); for(let i = 0; i < bokehCount; i++){ bokehPos[i*3] = (Math.random() - 0.5) * 22; bokehPos[i*3+1] = Math.random() * 7 - 1; bokehPos[i*3+2] = Z_START - Math.random() * (Z_START - Z_END + 20); tmpColor.set(PALETTE[i % PALETTE.length]); bokehCol[i*3] = tmpColor.r; bokehCol[i*3+1] = tmpColor.g; bokehCol[i*3+2] = tmpColor.b; } bokehGeo.setAttribute('position', new THREE.BufferAttribute(bokehPos, 3)); bokehGeo.setAttribute('color', new THREE.BufferAttribute(bokehCol, 3)); const bokeh = new THREE.Points(bokehGeo, new THREE.PointsMaterial({ size:0.42, map:glowTex, transparent:true, opacity:0.55, vertexColors:true, blending:THREE.AdditiveBlending, depthWrite:false })); scene.add(bokeh);
+  let scrollFrac = 0; function updateScroll(){ const max = document.documentElement.scrollHeight - window.innerHeight; scrollFrac = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0; } window.addEventListener('scroll', updateScroll, { passive:true }); updateScroll();
+  let mouseX = 0, mouseY = 0; window.addEventListener('mousemove', (e) => { mouseX = (e.clientX / window.innerWidth) - 0.5; mouseY = (e.clientY / window.innerHeight) - 0.5; });
+  function resize(){ camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); } window.addEventListener('resize', resize);
+  let t = 0; function animate(){ requestAnimationFrame(animate); t += 0.01; const camZ = Z_START + (Z_END - Z_START) * scrollFrac; camera.position.z += (camZ - camera.position.z) * 0.055; camera.position.y = 2.4 + Math.sin(t * 0.5) * 0.08; camera.rotation.z = Math.sin(t * 0.35) * 0.012; const lookX = mouseX * 2.6; const lookY = 2.1 - mouseY * 1.1; camera.lookAt(lookX, lookY, camera.position.z - 16); floaters.forEach(m => { m.rotation.z = Math.sin(t + m.userData.floatOffset) * 0.035; m.position.y = 1.7 + Math.sin(t * 0.8 + m.userData.floatOffset) * 0.06; }); reflections.forEach(r => { r.mesh.position.y = 2 * floorY - r.source.position.y; r.mesh.rotation.z = -r.source.rotation.z; }); bokeh.rotation.y += 0.0005; const bp = bokeh.geometry.attributes.position; for(let i = 0; i < bokehCount; i++){ bp.array[i*3+1] += 0.0018; if(bp.array[i*3+1] > 6) bp.array[i*3+1] = -1; } bp.needsUpdate = true; renderer.render(scene, camera); }
+  if(reduceMotion){ renderer.render(scene, camera); } else { animate(); }
+})();
+</script>
+</body>
+</html>
